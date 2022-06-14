@@ -64,6 +64,14 @@ const App = () => {
     }
   };
 
+  printTextTest = async () => {
+    try {
+      await BLEPrinter.printText('<C>sample text</C>', {beep: true});
+    } catch (error) {
+      console.log('print bill error: ', error);
+    }
+  };
+
   return (
     <SafeAreaView>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
@@ -88,9 +96,30 @@ const App = () => {
             </Pressable>
           ))}
           {currentPrinter && (
-            <Pressable onPress={printBillTest}>
-              <Text>Print Bill Text</Text>
-            </Pressable>
+            <>
+              <Pressable
+                style={{
+                  borderWidth: 1,
+                  paddingHorizontal: 10,
+                  paddingVertical: 8,
+                  marginTop: 10,
+                  backgroundColor: '#CAD5E2'
+                }}
+                onPress={printBillTest}>
+                <Text>Print Bill Text</Text>
+              </Pressable>
+              <Pressable
+                style={{
+                  borderWidth: 1,
+                  paddingHorizontal: 10,
+                  paddingVertical: 8,
+                  marginTop: 10,
+                  backgroundColor: '#CAD5E2'
+                }}
+                onPress={printTextTest}>
+                <Text>Print Normal Text</Text>
+              </Pressable>
+            </>
           )}
         </View>
       </ScrollView>
