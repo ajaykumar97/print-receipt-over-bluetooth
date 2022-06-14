@@ -9,6 +9,7 @@ import {
   PermissionsAndroid,
   Platform,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {BLEPrinter} from 'react-native-thermal-receipt-printer';
@@ -35,7 +36,7 @@ const App = () => {
       setLoading(false);
     } catch (error) {
       console.log('init BLE error: ', error);
-      alert('Scanning printers error');
+      Alert.alert('Scanning printers error', JSON.stringify(error));
       setLoading(false);
     }
   }, []);
@@ -44,16 +45,17 @@ const App = () => {
     init();
   }, []);
 
-  const _connectPrinter = async printer => {
+  const connectPrinter = async printer => {
     try {
+      console.log('printer: ', printer);
       //connect printer
       const selectedPrinter = await BLEPrinter.connectPrinter(
         printer.inner_mac_address,
       );
-      setCurrentPrinter(selectedPrinter);
     } catch (error) {
       console.log('connect printer error: ', error);
     }
+    setCurrentPrinter(printer);
   };
 
   printBillTest = async () => {
@@ -87,7 +89,7 @@ const App = () => {
                 paddingVertical: 8,
                 marginTop: 10,
               }}
-              onPress={() => _connectPrinter(printer)}>
+              onPress={() => connectPrinter(printer)}>
               <Text>{`device_name: ${printer.device_name}, inner_mac_address: ${printer.inner_mac_address}`}</Text>
               {currentPrinter?.inner_mac_address ===
                 printer.inner_mac_address && (
@@ -95,32 +97,28 @@ const App = () => {
               )}
             </Pressable>
           ))}
-          {currentPrinter && (
-            <>
-              <Pressable
-                style={{
-                  borderWidth: 1,
-                  paddingHorizontal: 10,
-                  paddingVertical: 8,
-                  marginTop: 10,
-                  backgroundColor: '#CAD5E2'
-                }}
-                onPress={printBillTest}>
-                <Text>Print Bill Text</Text>
-              </Pressable>
-              <Pressable
-                style={{
-                  borderWidth: 1,
-                  paddingHorizontal: 10,
-                  paddingVertical: 8,
-                  marginTop: 10,
-                  backgroundColor: '#CAD5E2'
-                }}
-                onPress={printTextTest}>
-                <Text>Print Normal Text</Text>
-              </Pressable>
-            </>
-          )}
+          <Pressable
+            style={{
+              borderWidth: 1,
+              paddingHorizontal: 10,
+              paddingVertical: 8,
+              marginTop: 10,
+              backgroundColor: '#CAD5E2',
+            }}
+            onPress={printBillTest}>
+            <Text>Print Bill Text</Text>
+          </Pressable>
+          <Pressable
+            style={{
+              borderWidth: 1,
+              paddingHorizontal: 10,
+              paddingVertical: 8,
+              marginTop: 10,
+              backgroundColor: '#CAD5E2',
+            }}
+            onPress={printTextTest}>
+            <Text>Print Normal Text</Text>
+          </Pressable>
         </View>
       </ScrollView>
     </SafeAreaView>
